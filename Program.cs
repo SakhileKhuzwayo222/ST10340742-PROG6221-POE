@@ -76,23 +76,32 @@ public class Recipe
     {
         while (true)
         {
-            Console.WriteLine("Enter details for an ingredient (or 'done' to finish):");
-            Console.Write("Ingredient Name: ");
-            string ingredientName = Console.ReadLine() ?? string.Empty;
-            if (ingredientName?.ToLower() == "done")
-                break;
+         Console.WriteLine("Enter details for an ingredient (or 'done' to finish):");
+Console.Write("Ingredient Name: ");
+string ingredientName = Console.ReadLine() ?? string.Empty;
+if (ingredientName?.ToLower() == "done")
+    break;
 
-            Console.Write("Ingredient Quantity: ");
-            double quantity;
-                
-            Console.Write("Ingredient Unit: ");
-            string unit = Console.ReadLine() ?? string.Empty;
+Console.Write("Ingredient Quantity: ");
+double quantity;
+while (!double.TryParse(Console.ReadLine(), out quantity))
+{
+    Console.WriteLine("Invalid quantity. Please enter a valid number.");
+}
 
-            Console.Write("Ingredient Food Group: ");
-            string foodGroup = Console.ReadLine() ?? string.Empty;
+Console.Write("Ingredient Unit: ");
+string unit = Console.ReadLine() ?? string.Empty;
 
-            Console.Write("Ingredient Calories: ");
-            double calories;
+Console.Write("Ingredient Food Group: ");
+string foodGroup = Console.ReadLine() ?? string.Empty;
+
+Console.Write("Ingredient Calories: ");
+double calories;
+while (!double.TryParse(Console.ReadLine(), out calories))
+{
+    Console.WriteLine("Invalid calories. Please enter a valid number.");
+}
+
 
             Console.WriteLine("Ingredient added successfully.");
           
