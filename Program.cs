@@ -112,7 +112,7 @@ public class Recipe
         {
             Console.WriteLine("Enter details for a step (or 'done' to finish):");
             Console.Write("Step Description: ");
-            string description = Console.ReadLine();
+            string description = Console.ReadLine() ?? string.Empty;
             if (description?.ToLower() == "done")
                 break;
 
@@ -160,9 +160,9 @@ public class Recipe
     public void ClearDataWithConfirmation()
     {
         Console.WriteLine("Are you sure you want to clear all data? (yes/no)");
-        string userInput = Console.ReadLine();
+        string userInput = Console.ReadLine() ?? string.Empty;
 
-        if (userInput?.ToLower() == "yes")
+        if (userInput.ToLower() == "yes")
         {
             // Clear data
             ingredients.Clear();
