@@ -55,7 +55,7 @@ public class Recipe
         {
             Console.WriteLine("Enter details for a new recipe (or 'done' to finish):");
             Console.Write("Recipe Name: ");
-            string recipeName = Console.ReadLine();
+            string recipeName = Console.ReadLine() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(recipeName))
             {
                 Console.WriteLine("Recipe name cannot be empty.");
@@ -63,13 +63,8 @@ public class Recipe
             }
 
             Recipe recipe = new Recipe(recipeName);
-            recipe.InputRecipeDetails();
-            recipes.Add(recipe);
-
-            Console.WriteLine("Recipe added successfully.");
-
             Console.Write("Do you want to add another recipe? (yes/no): ");
-            string addAnother = Console.ReadLine();
+            string addAnother = Console.ReadLine() ?? string.Empty;
             if (addAnother.ToLower() != "yes")
                 break;
         }
@@ -83,29 +78,29 @@ public class Recipe
         {
             Console.WriteLine("Enter details for an ingredient (or 'done' to finish):");
             Console.Write("Ingredient Name: ");
-            string ingredientName = Console.ReadLine();
+            string ingredientName = Console.ReadLine() ?? string.Empty;
             if (ingredientName?.ToLower() == "done")
                 break;
 
             Console.Write("Ingredient Quantity: ");
             double quantity;
-            while (!double.TryParse(Console.ReadLine(), out quantity))
-            {
-                Console.WriteLine("Invalid quantity. Please enter a valid number.");
-            }
-
+                
             Console.Write("Ingredient Unit: ");
-            string unit = Console.ReadLine();
+            string unit = Console.ReadLine() ?? string.Empty;
+
+            Console.Write("Ingredient Food Group: ");
+            string foodGroup = Console.ReadLine() ?? string.Empty;
 
             Console.Write("Ingredient Calories: ");
             double calories;
+
+            Console.WriteLine("Ingredient added successfully.");
+          
+
             while (!double.TryParse(Console.ReadLine(), out calories))
             {
                 Console.WriteLine("Invalid calories. Please enter a valid number.");
             }
-
-            Console.Write("Ingredient Food Group: ");
-            string foodGroup = Console.ReadLine();
 
             Ingredient ingredient = new Ingredient(ingredientName, quantity, unit, calories, foodGroup);
             ingredients.Add(ingredient);
