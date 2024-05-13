@@ -140,7 +140,7 @@ namespace RecipeApp
 
             Console.WriteLine("Ingredient added successfully.");
         }
-
+  
         // Prompt user for the number of steps
         Console.Write("Enter the number of steps: ");
         int numSteps;
