@@ -47,6 +47,7 @@ namespace RecipeApp
         private readonly List<Ingredient> ingredients;
         private readonly List<RecipeStep> steps;
         public string Name { get; set; }
+        public double OriginalQuantity { get; set; }
 
         public delegate void CaloriesExceedHandler(Recipe recipe, double totalCalories);
         public event CaloriesExceedHandler CaloriesExceeded;
@@ -169,7 +170,23 @@ namespace RecipeApp
         }
     }
 
+    public void ScaleRecipe(double factor)
+    {
+        foreach (Ingredient ingredient in ingredients)
+        {
+            ingredient.Quantity *= factor;
+        }
+    }
 
+    // Method to reset ingredient quantities to original values
+    public void ResetQuantities()
+    {
+        
+        foreach (Ingredient ingredient in ingredients)
+        {
+            ingredient.Quantity = ingredient.OriginalQuantity;
+        }
+    }
         public double CalculateTotalCalories()
         {
             double totalCalories = ingredients.Sum(i => i.Calories * i.Quantity);
