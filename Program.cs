@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace RecipeApp{
+
 public class Ingredient
 {
     private string name;
@@ -61,7 +62,7 @@ public class Ingredient
             foodGroup = value; 
         }
     }
-
+    
     public Ingredient(string name, double quantity, string unit, double calories, string foodGroup)
     {
         Name = name;
@@ -120,6 +121,8 @@ public class Recipe
             }
 
             Recipe recipe = new Recipe(recipeName);
+            // Call InputRecipeDetails and add the ingredients and steps to the recipe
+            recipe.InputRecipeDetails();
             Console.Write("Do you want to add another recipe? (yes/no): ");
             string addAnother = Console.ReadLine() ?? string.Empty;
             if (addAnother.ToLower() != "yes")
