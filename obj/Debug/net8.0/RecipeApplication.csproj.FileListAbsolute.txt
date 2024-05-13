@@ -1,0 +1,5 @@
+C:\Users\Admin user\Dropbox\PC\Desktop\ST10340742-PROG6221-POE\obj\Debug\net8.0\RecipeApplication.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Admin user\Dropbox\PC\Desktop\ST10340742-PROG6221-POE\obj\Debug\net8.0\RecipeApplication.AssemblyInfoInputs.cache
+C:\Users\Admin user\Dropbox\PC\Desktop\ST10340742-PROG6221-POE\obj\Debug\net8.0\RecipeApplication.AssemblyInfo.cs
+C:\Users\Admin user\Dropbox\PC\Desktop\ST10340742-PROG6221-POE\obj\Debug\net8.0\RecipeApplication.csproj.CoreCompileInputs.cache
+C:\Users\Admin user\Dropbox\PC\Desktop\ST10340742-PROG6221-POE\obj\Debug\net8.0\RecipeApplication.sourcelink.json
