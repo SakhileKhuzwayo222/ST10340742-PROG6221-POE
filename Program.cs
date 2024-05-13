@@ -299,27 +299,40 @@ namespace RecipeApp
 
     public class Program
     {
-        public static void Main(string[] args)
-        {
-            try
-            {
-                List<Recipe> recipes = Recipe.InputRecipes();
+       public static void Main(string[] args)
+{
+    try
+    {
+        List<Recipe> recipes = Recipe.InputRecipes();
 
-                foreach (var recipe in recipes)
-                {
-                    recipe.CaloriesExceeded += Recipe_CaloriesExceeded;
-                    recipe.DisplayRecipe();
-                    double totalCalories = recipe.CalculateTotalCalories();
-                    Console.WriteLine($"Total Calories: {totalCalories}");
-                    recipe.ClearDataWithConfirmation();
-                    recipe.CaloriesExceeded -= Recipe_CaloriesExceeded;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"An error occurred: {ex.Message}");
-            }
+        foreach (var recipe in recipes)
+        {
+            recipe.CaloriesExceeded += Recipe_CaloriesExceeded;
+            
+            // Scale the recipe if needed
+            recipe.ScaleRecipe();
+            
+            // Reset ingredient quantities if needed
+            recipe.ResetQuantities();
+            
+            // Display the recipe
+            recipe.DisplayRecipe();
+            
+            double totalCalories = recipe.CalculateTotalCalories();
+            Console.WriteLine($"Total Calories: {totalCalories}");
+            
+            // Clear data with confirmation
+            recipe.ClearDataWithConfirmation();
+            
+            recipe.CaloriesExceeded -= Recipe_CaloriesExceeded;
         }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"An error occurred: {ex.Message}");
+    }
+}
+
 
         public static void Recipe_CaloriesExceeded(Recipe recipe, double totalCalories)
         {
