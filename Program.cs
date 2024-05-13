@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+namespace RecipeApp{
 public class Ingredient
 {
     public string Name { get; set; }
@@ -224,5 +225,5 @@ public class Program
         Console.WriteLine($"Warning: Total calories of recipe '{recipe.Name}' exceed 300 ({totalCalories}).");
     }
 }
-
+}
 
