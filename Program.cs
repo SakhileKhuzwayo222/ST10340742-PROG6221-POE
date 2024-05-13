@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml.Linq;
+using System.Linq;
 
 // Class to represent an ingredient in the recipe
 public class Ingredient
@@ -8,15 +8,17 @@ public class Ingredient
     public string Name { get; set; }
     public double Quantity { get; set; }
     public string Unit { get; set; }
-    internal double OriginalQuantity { get; set; }
+    public double Calories { get; set; }
+    public string FoodGroup { get; set; }
 
     // Constructor to initialize ingredient properties
-    public Ingredient(string name, double quantity, string unit)
+    public Ingredient(string name, double quantity, string unit, double calories, string foodGroup)
     {
         Name = name;
         Quantity = quantity;
         Unit = unit;
-        OriginalQuantity = quantity;
+        Calories = calories;
+        FoodGroup = foodGroup;
     }
 }
 
@@ -37,34 +39,33 @@ public class Recipe
 {
     private List<Ingredient> ingredients;
     private List<RecipeStep> steps;
-    private object Name;
+    public string Name { get; set; }
 
-    // Constructor to initialize recipe with specified number of ingredients and steps
-    public Recipe(int numIngredients, int numSteps)
+    // Event delegate for notifying when total calories exceed 300
+    public delegate void CaloriesExceedHandler(Recipe recipe, double totalCalories);
+    public event CaloriesExceedHandler CaloriesExceeded;
+
+    // Constructor to initialize recipe
+    public Recipe(string name)
     {
-        ingredients = new List<Ingredient>(numIngredients);
-        steps = new List<RecipeStep>(numSteps);
+        Name = name;
+        ingredients = new List<Ingredient>();
+        steps = new List<RecipeStep>();
     }
 
     // Method to input details of the recipe
     public void InputRecipeDetails()
     {
- 
         try
         {
-            // Prompt user for number of ingredients and steps
-            Console.Write("Enter the number of ingredients: ");
-            int numIngredients = int.Parse(Console.ReadLine());
-
-            Console.Write("Enter the number of steps: ");
-            int numSteps = int.Parse(Console.ReadLine());
-
             // Input ingredients
-            for (int i = 0; i < numIngredients; i++)
+            Console.WriteLine($"Enter details for recipe '{Name}':");
+            while (true)
             {
-                Console.WriteLine($"Enter details for ingredient {i + 1}:");
-                Console.Write("Name: ");
+                Console.Write("Name (or 'done' to finish): ");
                 string name = Console.ReadLine();
+                if (name.ToLower() == "done")
+                    break;
 
                 Console.Write("Quantity: ");
                 double quantity = double.Parse(Console.ReadLine());
@@ -72,13 +73,20 @@ public class Recipe
                 Console.Write("Unit: ");
                 string unit = Console.ReadLine();
 
-                ingredients.Add(new Ingredient(name, quantity, unit));
+                Console.Write("Calories: ");
+                double calories = double.Parse(Console.ReadLine());
+
+                Console.Write("Food Group: ");
+                string foodGroup = Console.ReadLine();
+
+                ingredients.Add(new Ingredient(name, quantity, unit, calories, foodGroup));
             }
 
             // Input steps
-            for (int i = 0; i < numSteps; i++)
+            Console.WriteLine($"Enter steps for recipe '{Name}':");
+            for (int i = 0; i < steps.Count; i++)
             {
-                Console.WriteLine($"Enter description for step {i + 1}:");
+                Console.Write($"Step {i + 1}: ");
                 string description = Console.ReadLine();
                 steps.Add(new RecipeStep(description));
             }
@@ -87,6 +95,17 @@ public class Recipe
         {
             Console.WriteLine("Invalid input format. Please enter a valid number.");
         }
+    }
+
+    // Method to calculate the total calories of the recipe
+    public double CalculateTotalCalories()
+    {
+        double totalCalories = ingredients.Sum(i => i.Calories * i.Quantity);
+        if (totalCalories > 300)
+        {
+            CaloriesExceeded?.Invoke(this, totalCalories);
+        }
+        return totalCalories;
     }
 
     // Method to display the recipe
@@ -98,9 +117,9 @@ public class Recipe
         Console.ResetColor();
 
         Console.WriteLine("Ingredients:");
-        for (int i = 0; i < ingredients.Count; i++)
+        foreach (var ingredient in ingredients)
         {
-            Console.WriteLine($"{i + 1}. {ingredients[i].Name} - {ingredients[i].Quantity} {ingredients[i].Unit}");
+            Console.WriteLine($"{ingredient.Name} - {ingredient.Quantity} {ingredient.Unit} ({ingredient.FoodGroup})");
         }
 
         Console.WriteLine("Steps:");
@@ -113,96 +132,28 @@ public class Recipe
         }
         Console.WriteLine();
     }
+/*
 
-   
-    /// Scales the recipe by a specified factor.
-    /// return the updated recipe with scaled ingredient quantities.
-    public Recipe ScaleRecipe(Action<string> getUserInput)
-    {
-        getUserInput.Invoke("Enter the scale factor (e.g., half, double, triple, 0.5, 2): ");
-        string scaleInput = Console.ReadLine();
+public void ClearDataWithConfirmation()
+{
+    Console.WriteLine("Are you sure you want to clear all data? (yes/no)");
+    string userInput = Console.ReadLine();
 
-        double factor = 1.0;
-
-        switch (scaleInput.ToLower())
-        {
-            case "half":
-                factor = 0.5;
-                break;
-            case "double":
-                factor = 2.0;
-                break;
-            case "triple":
-                factor = 3.0;
-                break;
-            default:
-                if (!double.TryParse(scaleInput, out factor))
-                {
-                    Console.WriteLine("Invalid scale type. Recipe was not scaled.");
-                    return this;
-                }
-                break;
-        }
-
-        foreach (Ingredient ingredient in ingredients)
-        {
-            ingredient.Quantity *= factor;
-        }
-
-        return this;
+    if(userInput.ToLower() == "yes") {
+        // Clear data
+        recipe.ClearData();
+        Console.WriteLine("Data cleared.");
+    } else {
+        Console.WriteLine("Operation cancelled.");
     }
-
-
-
-    // Method to reset ingredient quantities to original values
-    /// Reset ingredient quantities to their original values if the user scaled the recipe.
-    public bool ResetQuantities()
-    {
-        Console.WriteLine("Would you like to reset the quantities? (Y/N)");
-        string userInput = Console.ReadLine();
-
-        if (userInput.ToLower() == "y")
-        {
-            List<Ingredient> originalQuantities = new List<Ingredient>(ingredients);
-            foreach (Ingredient ingredient in ingredients)
-            {
-                ingredient.Quantity = ingredient.OriginalQuantity;
-            }
-
-            //output message
-            Console.WriteLine("Quantities reset successfully.");
-
-            // Print the reset recipe
-            DisplayRecipe();
-
-            return true;
-        }
-        else
-        {
-            Console.WriteLine("Reset quantities canceled.");
-            return false;
-        }
-    }
-
-
-
+}
+*/
     // Method to clear all data and start with a new recipe
     public void ClearData()
     {
-        // Confirm with user before clearing data
-        Console.Write("Are you sure you want to clear all data? (yes/no): ");
-        string response = Console.ReadLine().ToLower();
-
-        if (response == "yes")
-        {
-            ingredients.Clear();
-            steps.Clear();
-            Console.WriteLine("Data cleared successfully.");
-        }
-        else if (response != "no")
-        {
-            Console.WriteLine("Invalid response. Data was not cleared.");
-        }
+        ingredients.Clear();
+        steps.Clear();
+        Console.WriteLine("Data cleared successfully.");
     }
 }
 
@@ -210,21 +161,106 @@ public class Recipe
 public class Program
 {
     public static void Main(string[] args)
+{
+    try
     {
-        Recipe recipe = new Recipe(5, 10);
-        recipe.InputRecipeDetails();
+        // Create a recipe
+        Recipe recipe = CreateRecipe();
+
+        // Subscribe to the event for notifying when total calories exceed 300
+        recipe.CaloriesExceeded += Recipe_CaloriesExceeded;
+
+        // Display recipe details
         recipe.DisplayRecipe();
 
-        //prompt the user for input
-        Action<string> getUserInput = (prompt) =>
-        {
-            Console.Write(prompt);
-        };
+        // Calculate and display total calories
+        double totalCalories = recipe.CalculateTotalCalories();
+        Console.WriteLine($"Total Calories: {totalCalories}");
 
-        // Call ScaleRecipe method with a getUserInput function
-        recipe.ScaleRecipe(getUserInput);
-        recipe.DisplayRecipe();
-        recipe.ResetQuantities();
-        recipe.ClearData();
+        // Ask for user confirmation and clear data
+        ClearDataWithConfirmation(recipe);
+
+        // Unsubscribe from the event
+        recipe.CaloriesExceeded -= Recipe_CaloriesExceeded;
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"An error occurred: {ex.Message}");
     }
 }
+
+    // Method to create a recipe by taking user input
+    public static Recipe CreateRecipe()
+    {
+        Console.Write("Enter the recipe name: ");
+        string name = Console.ReadLine();
+
+        Recipe recipe = new Recipe(name);
+        recipe.InputRecipeDetails();
+
+        return recipe;
+    }
+
+    // Event handler for when total calories exceed 300
+    private static void Recipe_CaloriesExceeded(Recipe recipe, double totalCalories)
+    {
+        Console.WriteLine($"Warning: Total calories of recipe '{recipe.Name}' exceed 300 ({totalCalories}).");
+    }
+}
+
+
+// Output:
+// Enter the number of ingredients: 2
+// Enter the number of steps: 3
+// Enter details for ingredient 1:
+// Name: Apples
+// Quantity: 2
+// Unit: lbs
+// Calories: 52
+// Food Group: Fruit
+// Enter description for step 1:
+// Cut the apples
+// Enter description for step 2:
+// Peel the apples
+// Enter description for step 3:
+// Cut the apples in half
+
+// Recipe: Apples
+// Ingredients:
+// Apples - 2 lbs (Fruit)
+// Steps:
+// 1. Cut the apples
+// 2. Peel the apples
+// 3. Cut the apples in half
+
+// Enter the scale factor (e.g., 0.5 for half, 2 for double): 0.5
+// Recipe: Apples
+// Ingredients:
+// Apples - 1.0 lbs (Fruit)
+// Steps:
+// 1. Cut the apples
+// 2. Peel the apples
+// 3. Cut the apples in half
+
+// Enter the scale factor (e.g., 0.5 for half, 2 for double): 2
+// Recipe: Apples
+// Ingredients:
+// Apples - 2.0 lbs (Fruit)
+// Steps:
+// 1. Cut the apples
+// 2. Peel the apples
+// 3. Cut the apples in half
+
+// Quantities reset successfully.
+// Recipe: Apples
+// Ingredients:
+// Apples - 2.0 lbs (Fruit)
+// Steps:
+// 1. Cut the apples
+// 2. Peel the apples
+// 3. Cut the apples in half
+
+// Data cleared successfully.
+// Press any key to continue . . .
+
+
