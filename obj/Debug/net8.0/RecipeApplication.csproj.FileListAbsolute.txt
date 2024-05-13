@@ -3,3 +3,13 @@ C:\Users\Admin user\Dropbox\PC\Desktop\ST10340742-PROG6221-POE\obj\Debug\net8.0\
 C:\Users\Admin user\Dropbox\PC\Desktop\ST10340742-PROG6221-POE\obj\Debug\net8.0\RecipeApplication.AssemblyInfo.cs
 C:\Users\Admin user\Dropbox\PC\Desktop\ST10340742-PROG6221-POE\obj\Debug\net8.0\RecipeApplication.csproj.CoreCompileInputs.cache
 C:\Users\Admin user\Dropbox\PC\Desktop\ST10340742-PROG6221-POE\obj\Debug\net8.0\RecipeApplication.sourcelink.json
+C:\Users\Admin user\Dropbox\PC\Desktop\ST10340742-PROG6221-POE\bin\Debug\net8.0\RecipeApplication.exe
+C:\Users\Admin user\Dropbox\PC\Desktop\ST10340742-PROG6221-POE\bin\Debug\net8.0\RecipeApplication.deps.json
+C:\Users\Admin user\Dropbox\PC\Desktop\ST10340742-PROG6221-POE\bin\Debug\net8.0\RecipeApplication.runtimeconfig.json
+C:\Users\Admin user\Dropbox\PC\Desktop\ST10340742-PROG6221-POE\bin\Debug\net8.0\RecipeApplication.dll
+C:\Users\Admin user\Dropbox\PC\Desktop\ST10340742-PROG6221-POE\bin\Debug\net8.0\RecipeApplication.pdb
+C:\Users\Admin user\Dropbox\PC\Desktop\ST10340742-PROG6221-POE\obj\Debug\net8.0\RecipeApplication.dll
+C:\Users\Admin user\Dropbox\PC\Desktop\ST10340742-PROG6221-POE\obj\Debug\net8.0\refint\RecipeApplication.dll
+C:\Users\Admin user\Dropbox\PC\Desktop\ST10340742-PROG6221-POE\obj\Debug\net8.0\RecipeApplication.pdb
+C:\Users\Admin user\Dropbox\PC\Desktop\ST10340742-PROG6221-POE\obj\Debug\net8.0\RecipeApplication.genruntimeconfig.cache
+C:\Users\Admin user\Dropbox\PC\Desktop\ST10340742-PROG6221-POE\obj\Debug\net8.0\ref\RecipeApplication.dll

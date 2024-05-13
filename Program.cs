@@ -5,11 +5,62 @@ using System.Linq;
 namespace RecipeApp{
 public class Ingredient
 {
-    public string Name { get; set; }
-    public double Quantity { get; set; }
-    public string Unit { get; set; }
-    public double Calories { get; set; }
-    public string FoodGroup { get; set; }
+    private string name;
+    private double quantity;
+    private string unit;
+    private double calories;
+    private string foodGroup;
+
+    public string Name
+    {
+        get { return name; }
+        set 
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException("Ingredient name cannot be null or empty.");
+            }
+            name = value; 
+        }
+    }
+
+    public double Quantity
+    {
+        get { return quantity; }
+        set { quantity = value; }
+    }
+
+    public string Unit
+    {
+        get { return unit; }
+        set 
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException("Ingredient unit cannot be null or empty.");
+            }
+            unit = value; 
+        }
+    }
+
+    public double Calories
+    {
+        get { return calories; }
+        set { calories = value; }
+    }
+
+    public string FoodGroup
+    {
+        get { return foodGroup; }
+        set 
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException("Ingredient food group cannot be null or empty.");
+            }
+            foodGroup = value; 
+        }
+    }
 
     public Ingredient(string name, double quantity, string unit, double calories, string foodGroup)
     {
@@ -21,12 +72,17 @@ public class Ingredient
     }
 }
 
+
 public class RecipeStep
 {
-    public string Description { get; set; }
+    public string Description { get; }
 
     public RecipeStep(string description)
     {
+        if (string.IsNullOrEmpty(description))
+        {
+            throw new ArgumentException("Description cannot be null or empty.");
+        }
         Description = description;
     }
 }
@@ -77,31 +133,34 @@ public class Recipe
     {
         while (true)
         {
-         Console.WriteLine("Enter details for an ingredient (or 'done' to finish):");
-Console.Write("Ingredient Name: ");
-string ingredientName = Console.ReadLine() ?? string.Empty;
-if (ingredientName?.ToLower() == "done")
-    break;
+            Console.WriteLine("Enter details for an ingredient (or 'done' to finish):");
 
-Console.Write("Ingredient Quantity: ");
-double quantity;
-while (!double.TryParse(Console.ReadLine(), out quantity))
-{
-    Console.WriteLine("Invalid quantity. Please enter a valid number.");
-}
+            Console.Write("Ingredient Name: ");
+            string ingredientName = Console.ReadLine() ?? string.Empty;
 
-Console.Write("Ingredient Unit: ");
-string unit = Console.ReadLine() ?? string.Empty;
+            if (ingredientName?.ToLower() == "done")
+                
+                break; //
 
-Console.Write("Ingredient Food Group: ");
-string foodGroup = Console.ReadLine() ?? string.Empty;
+                Console.Write("Ingredient Quantity: ");
+                double quantity;
+                while (!double.TryParse(Console.ReadLine(), out quantity))
+                {
+                    Console.WriteLine("Invalid quantity. Please enter a valid number.");
+                }
 
-Console.Write("Ingredient Calories: ");
-double calories;
-while (!double.TryParse(Console.ReadLine(), out calories))
-{
-    Console.WriteLine("Invalid calories. Please enter a valid number.");
-}
+                Console.Write("Ingredient Unit: ");
+                string unit = Console.ReadLine() ?? string.Empty;
+
+                Console.Write("Ingredient Food Group: ");
+                string foodGroup = Console.ReadLine() ?? string.Empty;
+
+                Console.Write("Ingredient Calories: ");
+                double calories;
+                while (!double.TryParse(Console.ReadLine(), out calories))
+                {
+                    Console.WriteLine("Invalid calories. Please enter a valid number.");
+                }
 
 
             Console.WriteLine("Ingredient added successfully.");
