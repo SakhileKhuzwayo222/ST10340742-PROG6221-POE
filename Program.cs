@@ -2,148 +2,105 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RecipeApp{
-
-public class Ingredient
+namespace RecipeApp
 {
-    private string name;
-    private double quantity;
-    private string unit;
-    private double calories;
-    private string foodGroup;
-
-    public string Name
+    public class Ingredient
     {
-        get { return name; }
-        set 
+        public string Name { get; set; }
+        public double Quantity { get; set; }
+        public string Unit { get; set; }
+        public double Calories { get; set; }
+        public string FoodGroup { get; set; }
+
+        public Ingredient(string name, double quantity, string unit, double calories, string foodGroup)
         {
-            if (string.IsNullOrEmpty(value))
-            {
+            if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("Ingredient name cannot be null or empty.");
-            }
-            name = value; 
-        }
-    }
-
-    public double Quantity
-    {
-        get { return quantity; }
-        set { quantity = value; }
-    }
-
-    public string Unit
-    {
-        get { return unit; }
-        set 
-        {
-            if (string.IsNullOrEmpty(value))
-            {
+            if (string.IsNullOrEmpty(unit))
                 throw new ArgumentException("Ingredient unit cannot be null or empty.");
-            }
-            unit = value; 
-        }
-    }
-
-    public double Calories
-    {
-        get { return calories; }
-        set { calories = value; }
-    }
-
-    public string FoodGroup
-    {
-        get { return foodGroup; }
-        set 
-        {
-            if (string.IsNullOrEmpty(value))
-            {
+            if (string.IsNullOrEmpty(foodGroup))
                 throw new ArgumentException("Ingredient food group cannot be null or empty.");
-            }
-            foodGroup = value; 
+
+            Name = name;
+            Quantity = quantity;
+            Unit = unit;
+            Calories = calories;
+            FoodGroup = foodGroup;
         }
     }
-    
-    public Ingredient(string name, double quantity, string unit, double calories, string foodGroup)
+
+    public class RecipeStep
     {
-        Name = name;
-        Quantity = quantity;
-        Unit = unit;
-        Calories = calories;
-        FoodGroup = foodGroup;
-    }
-}
+        public string Description { get; }
 
-
-public class RecipeStep
-{
-    public string Description { get; }
-
-    public RecipeStep(string description)
-    {
-        if (string.IsNullOrEmpty(description))
+        public RecipeStep(string description)
         {
-            throw new ArgumentException("Description cannot be null or empty.");
+            if (string.IsNullOrEmpty(description))
+                throw new ArgumentException("Description cannot be null or empty.");
+
+            Description = description;
         }
-        Description = description;
-    }
-}
-
-public class Recipe
-{
-    private List<Ingredient> ingredients;
-    private List<RecipeStep> steps;
-    public string Name { get; set; }
-
-    public delegate void CaloriesExceedHandler(Recipe recipe, double totalCalories);
-    public event CaloriesExceedHandler CaloriesExceeded;
-
-    public Recipe(string name)
-    {
-        Name = name;
-        ingredients = new List<Ingredient>();
-        steps = new List<RecipeStep>();
-        CaloriesExceeded = delegate { };
     }
 
-    public static List<Recipe> InputRecipes()
+    public class Recipe
     {
-        List<Recipe> recipes = new List<Recipe>();
+        private readonly List<Ingredient> ingredients;
+        private readonly List<RecipeStep> steps;
+        public string Name { get; set; }
 
-        while (true)
+        public delegate void CaloriesExceedHandler(Recipe recipe, double totalCalories);
+        public event CaloriesExceedHandler CaloriesExceeded;
+
+        public Recipe(string name)
         {
-            Console.WriteLine("Enter details for a new recipe (or 'done' to finish):");
-            Console.Write("Recipe Name: ");
-            string recipeName = Console.ReadLine() ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(recipeName))
+            if (string.IsNullOrEmpty(name))
+                throw new ArgumentException("Recipe name cannot be null or empty.");
+
+            Name = name;
+            ingredients = new List<Ingredient>();
+            steps = new List<RecipeStep>();
+            CaloriesExceeded += delegate { };
+        }
+
+        public static List<Recipe> InputRecipes()
+        {
+            List<Recipe> recipes = new List<Recipe>();
+
+            while (true)
             {
-                Console.WriteLine("Recipe name cannot be empty.");
-                continue;
+                Console.WriteLine("Enter details for a new recipe (or 'done' to finish):");
+                Console.Write("Recipe Name: ");
+                string recipeName = Console.ReadLine()?.Trim();
+                if (string.IsNullOrWhiteSpace(recipeName))
+                {
+                    Console.WriteLine("Recipe name cannot be empty.");
+                    continue;
+                }
+
+                Recipe recipe = new Recipe(recipeName);
+                recipe.InputRecipeDetails();
+                recipes.Add(recipe);
+
+                Console.Write("Do you want to add another recipe? (yes/no): ");
+                string addAnother = Console.ReadLine()?.Trim();
+                if (addAnother?.ToLower() != "yes")
+                    break;
             }
 
-            Recipe recipe = new Recipe(recipeName);
-            // Call InputRecipeDetails and add the ingredients and steps to the recipe
-            recipe.InputRecipeDetails();
-            Console.Write("Do you want to add another recipe? (yes/no): ");
-            string addAnother = Console.ReadLine() ?? string.Empty;
-            if (addAnother.ToLower() != "yes")
-                break;
+            return recipes.OrderBy(r => r.Name).ToList();
         }
 
-        return recipes.OrderBy(r => r.Name).ToList();
-    }
-
-    public void InputRecipeDetails()
-    {
-        while (true)
+        public void InputRecipeDetails()
         {
-            Console.WriteLine("Enter details for an ingredient (or 'done' to finish):");
+            while (true)
+            {
+                Console.WriteLine("Enter details for an ingredient (or 'done' to finish):");
 
-            Console.Write("Ingredient Name: ");
-            string ingredientName = Console.ReadLine() ?? string.Empty;
+                Console.Write("Ingredient Name: ");
+                string ingredientName = Console.ReadLine()?.Trim();
 
-            if (ingredientName?.ToLower() == "done")
-                
-                break; //
+                if (string.Equals(ingredientName, "done", StringComparison.OrdinalIgnoreCase))
+                    break;
 
                 Console.Write("Ingredient Quantity: ");
                 double quantity;
@@ -153,10 +110,10 @@ public class Recipe
                 }
 
                 Console.Write("Ingredient Unit: ");
-                string unit = Console.ReadLine() ?? string.Empty;
+                string unit = Console.ReadLine()?.Trim();
 
                 Console.Write("Ingredient Food Group: ");
-                string foodGroup = Console.ReadLine() ?? string.Empty;
+                string foodGroup = Console.ReadLine()?.Trim();
 
                 Console.Write("Ingredient Calories: ");
                 double calories;
@@ -165,127 +122,123 @@ public class Recipe
                     Console.WriteLine("Invalid calories. Please enter a valid number.");
                 }
 
+                Ingredient ingredient = new Ingredient(ingredientName, quantity, unit, calories, foodGroup);
+                ingredients.Add(ingredient);
 
-            Console.WriteLine("Ingredient added successfully.");
-          
-
-            while (!double.TryParse(Console.ReadLine(), out calories))
-            {
-                Console.WriteLine("Invalid calories. Please enter a valid number.");
+                Console.WriteLine("Ingredient added successfully.");
             }
 
-            Ingredient ingredient = new Ingredient(ingredientName, quantity, unit, calories, foodGroup);
-            ingredients.Add(ingredient);
+            while (true)
+            {
+                Console.WriteLine("Enter details for a step (or 'done' to finish):");
+                Console.Write("Step Description: ");
+                string description = Console.ReadLine()?.Trim();
+                if (string.Equals(description, "done", StringComparison.OrdinalIgnoreCase))
+                    break;
 
-            Console.WriteLine("Ingredient added successfully.");
+                RecipeStep step = new RecipeStep(description);
+                steps.Add(step);
+
+                Console.WriteLine("Step added successfully.");
+            }
         }
 
-        while (true)
+        public double CalculateTotalCalories()
         {
-            Console.WriteLine("Enter details for a step (or 'done' to finish):");
-            Console.Write("Step Description: ");
-            string description = Console.ReadLine() ?? string.Empty;
-            if (description?.ToLower() == "done")
-                break;
-
-            RecipeStep step = new RecipeStep(description);
-            steps.Add(step);
-
-            Console.WriteLine("Step added successfully.");
-        }
-    }
-
-    public double CalculateTotalCalories()
-    {
-        double totalCalories = ingredients.Sum(i => i.Calories * i.Quantity);
-        if (totalCalories > 300)
-        {
-            CaloriesExceeded?.Invoke(this, totalCalories);
-        }
-        return totalCalories;
-    }
-
-    public void DisplayRecipe()
-    {
-        Console.WriteLine();
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"Recipe: {Name}");
-        Console.ResetColor();
-
-        Console.WriteLine("Ingredients:");
-        foreach (var ingredient in ingredients)
-        {
-            Console.WriteLine($"{ingredient.Name} - {ingredient.Quantity} {ingredient.Unit} ({ingredient.FoodGroup})");
+            double totalCalories = ingredients.Sum(i => i.Calories * i.Quantity);
+            if (totalCalories > 300)
+            {
+                CaloriesExceeded?.Invoke(this, totalCalories);
+            }
+            return totalCalories;
         }
 
-        Console.WriteLine("Steps:");
-        for (int i = 0; i < steps.Count; i++)
+        
+        public void DisplayRecipe()
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write($"{i + 1}. ");
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Recipe: {Name}");
             Console.ResetColor();
-            Console.WriteLine(steps[i].Description);
-        }
-        Console.WriteLine();
-    }
 
-    public void ClearDataWithConfirmation()
-    {
-        Console.WriteLine("Are you sure you want to clear all data? (yes/no)");
-        string userInput = Console.ReadLine() ?? string.Empty;
-
-        if (userInput.ToLower() == "yes")
-        {
-            // Clear data
-            ingredients.Clear();
-            steps.Clear();
-            Console.WriteLine("Data cleared.");
-        }
-        else
-        {
-            Console.WriteLine("Operation cancelled.");
-        }
-    }
-}
-
-public class Program
-{
-    public static void Main(string[] args)
-    {
-        try
-        {
-            // Create a recipe
-            List<Recipe> recipes = Recipe.InputRecipes();
-
-            foreach (var recipe in recipes)
+            if (ingredients.Any())
             {
-                // Subscribe to the event for notifying when total calories exceed 300
-                recipe.CaloriesExceeded += Recipe_CaloriesExceeded;
+                Console.WriteLine("Ingredients:");
+                foreach (var ingredient in ingredients)
+                {
+                    Console.WriteLine($"{ingredient.Name} - {ingredient.Quantity} {ingredient.Unit} ({ingredient.FoodGroup})");
+                }
+            }
+            else
+            {
+                Console.WriteLine("No ingredients added.");
+            }
 
-                // Display recipe details
-                recipe.DisplayRecipe();
+            if (steps.Any())
+            {
+                Console.WriteLine("Steps:");
+                for (int i = 0; i < steps.Count; i++)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write($"{i + 1}. ");
+                    Console.ResetColor();
+                    Console.WriteLine(steps[i].Description);
+                }
+            }
+            else
+            {
+                Console.WriteLine("No steps added.");
+            }
 
-                // Calculate and display total calories
-                double totalCalories = recipe.CalculateTotalCalories();
-                Console.WriteLine($"Total Calories: {totalCalories}");
+            Console.WriteLine();
+        }
 
-                // Ask for user confirmation and clear data
-                recipe.ClearDataWithConfirmation();
+        public void ClearDataWithConfirmation()
+        {
+            Console.WriteLine("Are you sure you want to clear all data? (yes/no)");
+            string userInput = Console.ReadLine()?.Trim();
 
-                // Unsubscribe from the event
-                recipe.CaloriesExceeded -= Recipe_CaloriesExceeded;
+            if (string.Equals(userInput, "yes", StringComparison.OrdinalIgnoreCase))
+            {
+                ingredients.Clear();
+                steps.Clear();
+                Console.WriteLine("Data cleared.");
+            }
+            else
+            {
+                Console.WriteLine("Operation cancelled.");
             }
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An error occurred: {ex.Message}");
-        }
     }
 
-    public static void Recipe_CaloriesExceeded(Recipe recipe, double totalCalories)
+    public class Program
     {
-        Console.WriteLine($"Warning: Total calories of recipe '{recipe.Name}' exceed 300 ({totalCalories}).");
+        public static void Main(string[] args)
+        {
+            try
+            {
+                List<Recipe> recipes = Recipe.InputRecipes();
+
+                foreach (var recipe in recipes)
+                {
+                    recipe.CaloriesExceeded += Recipe_CaloriesExceeded;
+                    recipe.DisplayRecipe();
+                    double totalCalories = recipe.CalculateTotalCalories();
+                    Console.WriteLine($"Total Calories: {totalCalories}");
+                    recipe.ClearDataWithConfirmation();
+                    recipe.CaloriesExceeded -= Recipe_CaloriesExceeded;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+
+        public static void Recipe_CaloriesExceeded(Recipe recipe, double totalCalories)
+        {
+            Console.WriteLine($"Warning: Total calories of recipe '{recipe.Name}' exceed 300 ({totalCalories}).");
+        }
     }
-}
 }
 
