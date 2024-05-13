@@ -68,7 +68,7 @@ namespace RecipeApp
 
             while (true)
             {
-                Console.WriteLine("Enter details for a new recipe (or 'done' to finish):");
+                Console.WriteLine("Enter recipe details (or 'done' to finish):");
                 Console.Write("Recipe Name: ");
                 string recipeName = Console.ReadLine()?.Trim();
                 if (string.IsNullOrWhiteSpace(recipeName))
@@ -92,56 +92,83 @@ namespace RecipeApp
 
         public void InputRecipeDetails()
         {
-            while (true)
-            {
-                Console.WriteLine("Enter details for an ingredient (or 'done' to finish):");
-
-                Console.Write("Ingredient Name: ");
-                string ingredientName = Console.ReadLine()?.Trim();
-
-                if (string.Equals(ingredientName, "done", StringComparison.OrdinalIgnoreCase))
-                    break;
-
-                Console.Write("Ingredient Quantity: ");
-                double quantity;
-                while (!double.TryParse(Console.ReadLine(), out quantity))
-                {
-                    Console.WriteLine("Invalid quantity. Please enter a valid number.");
-                }
-
-                Console.Write("Ingredient Unit: ");
-                string unit = Console.ReadLine()?.Trim();
-
-                Console.Write("Ingredient Food Group: ");
-                string foodGroup = Console.ReadLine()?.Trim();
-
-                Console.Write("Ingredient Calories: ");
-                double calories;
-                while (!double.TryParse(Console.ReadLine(), out calories))
-                {
-                    Console.WriteLine("Invalid calories. Please enter a valid number.");
-                }
-
-                Ingredient ingredient = new Ingredient(ingredientName, quantity, unit, calories, foodGroup);
-                ingredients.Add(ingredient);
-
-                Console.WriteLine("Ingredient added successfully.");
-            }
-
-            while (true)
-            {
-                Console.WriteLine("Enter details for a step (or 'done' to finish):");
-                Console.Write("Step Description: ");
-                string description = Console.ReadLine()?.Trim();
-                if (string.Equals(description, "done", StringComparison.OrdinalIgnoreCase))
-                    break;
-
-                RecipeStep step = new RecipeStep(description);
-                steps.Add(step);
-
-                Console.WriteLine("Step added successfully.");
-            }
+        // Prompt user for the number of ingredients
+        Console.Write("Enter the number of ingredients: ");
+        int numIngredients;
+        while (!int.TryParse(Console.ReadLine(), out numIngredients) || numIngredients <= 0)
+        {
+            Console.WriteLine("Invalid input. Please enter a valid number greater than 0.");
+            Console.Write("Enter the number of ingredients: ");
         }
+
+        // Prompt user for ingredient details
+        for (int i = 0; i < numIngredients; i++)
+        {
+            Console.WriteLine($"Enter details for ingredient {i + 1}:");
+
+            Console.Write("Ingredient Name: ");
+            string ingredientName = Console.ReadLine()?.Trim();
+
+            // Check if the user wants to finish entering ingredients
+            if (string.Equals(ingredientName, "done", StringComparison.OrdinalIgnoreCase))
+                break;
+
+            Console.Write("Ingredient Quantity: ");
+            double quantity;
+            while (!double.TryParse(Console.ReadLine(), out quantity))
+            {
+                Console.WriteLine("Invalid quantity. Please enter a valid number.");
+                Console.Write("Ingredient Quantity: ");
+            }
+
+            Console.Write("Ingredient Unit: ");
+            string unit = Console.ReadLine()?.Trim();
+
+            Console.Write("Ingredient Food Group: ");
+            string foodGroup = Console.ReadLine()?.Trim();
+
+            Console.Write("Ingredient Calories: ");
+            double calories;
+            while (!double.TryParse(Console.ReadLine(), out calories))
+            {
+                Console.WriteLine("Invalid calories. Please enter a valid number.");
+                Console.Write("Ingredient Calories: ");
+            }
+
+            Ingredient ingredient = new Ingredient(ingredientName, quantity, unit, calories, foodGroup);
+            ingredients.Add(ingredient);
+
+            Console.WriteLine("Ingredient added successfully.");
+        }
+
+        // Prompt user for the number of steps
+        Console.Write("Enter the number of steps: ");
+        int numSteps;
+        while (!int.TryParse(Console.ReadLine(), out numSteps) || numSteps <= 0)
+        {
+            Console.WriteLine("Invalid input. Please enter a valid number greater than 0.");
+            Console.Write("Enter the number of steps: ");
+        }
+
+        // Prompt user for step details
+        for (int i = 0; i < numSteps; i++)
+        {
+            Console.WriteLine($"Enter details for step {i + 1}:");
+
+            Console.Write("Step Description: ");
+            string description = Console.ReadLine()?.Trim();
+
+            // Check if the user wants to finish entering steps
+            if (string.Equals(description, "done", StringComparison.OrdinalIgnoreCase))
+                break;
+
+            RecipeStep step = new RecipeStep(description);
+            steps.Add(step);
+
+            Console.WriteLine("Step added successfully.");
+        }
+    }
+
 
         public double CalculateTotalCalories()
         {
