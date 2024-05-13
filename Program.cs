@@ -11,6 +11,7 @@ namespace RecipeApp
         public string Unit { get; set; }
         public double Calories { get; set; }
         public string FoodGroup { get; set; }
+        public double OriginalQuantity { get; internal set; }
 
         public Ingredient(string name, double quantity, string unit, double calories, string foodGroup)
         {
@@ -41,7 +42,7 @@ namespace RecipeApp
             Description = description;
         }
     }
-
+   
     public class Recipe
     {
         private readonly List<Ingredient> ingredients;
@@ -52,6 +53,7 @@ namespace RecipeApp
         public delegate void CaloriesExceedHandler(Recipe recipe, double totalCalories);
         public event CaloriesExceedHandler CaloriesExceeded;
 
+        // Constructor
         public Recipe(string name)
         {
             if (string.IsNullOrEmpty(name))
@@ -63,6 +65,7 @@ namespace RecipeApp
             CaloriesExceeded += delegate { };
         }
 
+        // Method to input recipes
         public static List<Recipe> InputRecipes()
         {
             List<Recipe> recipes = new List<Recipe>();
@@ -91,6 +94,7 @@ namespace RecipeApp
             return recipes.OrderBy(r => r.Name).ToList();
         }
 
+        // Method to input recipe details
         public void InputRecipeDetails()
         {
         // Prompt user for the number of ingredients
@@ -170,23 +174,61 @@ namespace RecipeApp
         }
     }
 
-    public void ScaleRecipe(double factor)
+   public void ScaleRecipe()
+{
+    Console.WriteLine("Enter the scale factor (e.g., half, double, triple, 0.5, 2): ");
+    string scaleInput = Console.ReadLine();
+
+    double factor;
+
+    switch (scaleInput.ToLower())
     {
-        foreach (Ingredient ingredient in ingredients)
-        {
-            ingredient.Quantity *= factor;
-        }
+        case "half":
+            factor = 0.5;
+            break;
+        case "double":
+            factor = 2.0;
+            break;
+        case "triple":
+            factor = 3.0;
+            break;
+        default:
+            if (!double.TryParse(scaleInput, out factor))
+            {
+                Console.WriteLine("Invalid scale type. Recipe was not scaled.");
+                return;
+            }
+            break;
     }
 
-    // Method to reset ingredient quantities to original values
-    public void ResetQuantities()
+    foreach (Ingredient ingredient in ingredients)
     {
-        
+        ingredient.Quantity *= factor;
+    }
+
+    Console.WriteLine("Recipe scaled successfully.");
+}
+    // Method to reset ingredient quantities to original values
+  public void ResetQuantities()
+{
+    Console.WriteLine("Would you like to reset the quantities? (Y/N)");
+    string userInput = Console.ReadLine();
+
+    if (userInput.ToLower() == "y")
+    {
         foreach (Ingredient ingredient in ingredients)
         {
             ingredient.Quantity = ingredient.OriginalQuantity;
         }
+
+        Console.WriteLine("Quantities reset successfully.");
     }
+    else
+    {
+        Console.WriteLine("Reset quantities canceled.");
+    }
+}
+     
         public double CalculateTotalCalories()
         {
             double totalCalories = ingredients.Sum(i => i.Calories * i.Quantity);
