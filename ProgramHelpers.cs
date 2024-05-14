@@ -2,22 +2,16 @@
 
 internal static class ProgramHelpers
 {
-    public static void Main(string[])
+    // Assuming this method exists and returns a list of recipes
+    public static List<Recipe> InputRecipes()
     {
-        try
-        {
-            List<Recipe> recipes = InputRecipes();
-            foreach (var recipe in recipes)
-            {
-                recipe.CaloriesExceeded += Recipe_CaloriesExceeded;
-                recipe.ResetQuantities();
-                recipe.DisplayRecipe();
-                Console.WriteLine($"Total Calories: {recipe.CalculateTotalCalories()}");
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An error occurred: {ex.Message}");
-        }
+        // Placeholder implementation
+        return new List<Recipe>();
+    }
+
+    // Assuming this event handler exists
+    public static void Recipe_CaloriesExceeded(object sender, EventArgs e)
+    {
+        Console.WriteLine("Calories exceeded!");
     }
 }
