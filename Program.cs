@@ -74,7 +74,7 @@ namespace RecipeApp
             {
                 Console.WriteLine("Enter recipe details (or 'done' to finish):");
                 Console.Write("Recipe Name: ");
-                string recipeName = Console.ReadLine()?.Trim();
+                string recipeName = Console.ReadLine()?.Trim() ?? string.Empty;
                 if (string.IsNullOrWhiteSpace(recipeName))
                 {
                     Console.WriteLine("Recipe name cannot be empty.");
@@ -86,7 +86,7 @@ namespace RecipeApp
                 recipes.Add(recipe);
 
                 Console.Write("Do you want to add another recipe? (yes/no): ");
-                string addAnother = Console.ReadLine()?.Trim();
+                string addAnother = Console.ReadLine()?.Trim() ?? "";
                 if (addAnother?.ToLower() != "yes")
                     break;
             }
@@ -112,7 +112,7 @@ namespace RecipeApp
             Console.WriteLine($"Enter details for ingredient {i + 1}:");
 
             Console.Write("Ingredient Name: ");
-            string ingredientName = Console.ReadLine()?.Trim();
+            string ingredientName = Console.ReadLine()?.Trim() ?? "";
 
             // Check if the user wants to finish entering ingredients
             if (string.Equals(ingredientName, "done", StringComparison.OrdinalIgnoreCase))
@@ -127,10 +127,10 @@ namespace RecipeApp
             }
 
             Console.Write("Ingredient Unit: ");
-            string unit = Console.ReadLine()?.Trim();
+            string unit = Console.ReadLine()?.Trim() ?? "";
 
             Console.Write("Ingredient Food Group: ");
-            string foodGroup = Console.ReadLine()?.Trim();
+            string foodGroup =Console.ReadLine()?.Trim() ?? "";
 
             Console.Write("Ingredient Calories: ");
             double calories;
@@ -140,10 +140,12 @@ namespace RecipeApp
                 Console.Write("Ingredient Calories: ");
             }
 
-            Ingredient ingredient = new Ingredient(ingredientName, quantity, unit, calories, foodGroup);
-            ingredients.Add(ingredient);
-
-            Console.WriteLine("Ingredient added successfully.");
+            if (!string.IsNullOrEmpty(ingredientName))
+            {
+                Ingredient ingredient = new Ingredient(ingredientName, quantity, unit ?? "", calories, foodGroup ?? "");
+                ingredients.Add(ingredient);
+                Console.WriteLine("Ingredient added successfully.");
+            }
         }
   
         // Prompt user for the number of steps
@@ -161,7 +163,7 @@ namespace RecipeApp
             Console.WriteLine($"Enter details for step {i + 1}:");
 
             Console.Write("Step Description: ");
-            string description = Console.ReadLine()?.Trim();
+            string description = Console.ReadLine()?.Trim() ?? "";
 
             // Check if the user wants to finish entering steps
             if (string.Equals(description, "done", StringComparison.OrdinalIgnoreCase))
@@ -189,7 +191,7 @@ namespace RecipeApp
         public void ScaleRecipe()
         {
             Console.WriteLine("Enter the scale factor (e.g., half, double, triple, 0.5, 2): ");
-            string scaleInput = Console.ReadLine();
+            string scaleInput = Console.ReadLine()?.Trim() ?? "";
 
             double factor;
 
@@ -225,7 +227,7 @@ namespace RecipeApp
         public void ResetQuantities()
         {
             Console.WriteLine("Would you like to reset the quantities? (Yes/No)");
-            string userInput = Console.ReadLine();
+            string userInput = Console.ReadLine() ?? string.Empty;
 
             if (userInput.ToLower() == "yes")
             {
@@ -286,7 +288,7 @@ namespace RecipeApp
             public void ClearDataWithConfirmation()
             {
                 Console.WriteLine("Are you sure you want to clear all data? (yes/no)");
-                string userInput = Console.ReadLine()?.Trim();
+                string userInput = Console.ReadLine()?.Trim() ?? "";
 
                 if (string.Equals(userInput, "yes", StringComparison.OrdinalIgnoreCase))
                 {
