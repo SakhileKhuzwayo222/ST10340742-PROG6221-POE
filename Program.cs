@@ -174,61 +174,7 @@ namespace RecipeApp
         }
     }
 
-   public void ScaleRecipe()
-{
-    Console.WriteLine("Enter the scale factor (e.g., half, double, triple, 0.5, 2): ");
-    string scaleInput = Console.ReadLine();
-
-    double factor;
-
-    switch (scaleInput.ToLower())
-    {
-        case "half":
-            factor = 0.5;
-            break;
-        case "double":
-            factor = 2.0;
-            break;
-        case "triple":
-            factor = 3.0;
-            break;
-        default:
-            if (!double.TryParse(scaleInput, out factor))
-            {
-                Console.WriteLine("Invalid scale type. Recipe was not scaled.");
-                return;
-            }
-            break;
-    }
-
-    foreach (Ingredient ingredient in ingredients)
-    {
-        ingredient.Quantity *= factor;
-    }
-
-    Console.WriteLine("Recipe scaled successfully.");
-}
-    // Method to reset ingredient quantities to original values
-  public void ResetQuantities()
-{
-    Console.WriteLine("Would you like to reset the quantities? (Y/N)");
-    string userInput = Console.ReadLine();
-
-    if (userInput.ToLower() == "y")
-    {
-        foreach (Ingredient ingredient in ingredients)
-        {
-            ingredient.Quantity = ingredient.OriginalQuantity;
-        }
-
-        Console.WriteLine("Quantities reset successfully.");
-    }
-    else
-    {
-        Console.WriteLine("Reset quantities canceled.");
-    }
-}
-     
+        //calculate total calories
         public double CalculateTotalCalories()
         {
             double totalCalories = ingredients.Sum(i => i.Calories * i.Quantity);
@@ -239,7 +185,64 @@ namespace RecipeApp
             return totalCalories;
         }
 
-        
+        //scale recipe
+        public void ScaleRecipe()
+        {
+            Console.WriteLine("Enter the scale factor (e.g., half, double, triple, 0.5, 2): ");
+            string scaleInput = Console.ReadLine();
+
+            double factor;
+
+            switch (scaleInput.ToLower())
+            {
+                 case "half":
+                        factor = 0.5;
+                        break;
+                case "double":
+                        factor = 2.0;
+                        break;
+                case "triple":
+                        factor = 3.0;
+                        break;
+                default:
+                        if (!double.TryParse(scaleInput, out factor))
+                        {
+                            Console.WriteLine("Invalid scale type. Recipe was not scaled.");
+                            return;
+                        }
+                        break;
+            }
+
+            foreach (Ingredient ingredient in ingredients)
+            {
+                ingredient.Quantity *= factor;
+            }
+
+            Console.WriteLine("Recipe scaled successfully.");
+        }
+            
+        // Method to reset ingredient quantities to original values
+        public void ResetQuantities()
+        {
+            Console.WriteLine("Would you like to reset the quantities? (Y/N)");
+            string userInput = Console.ReadLine();
+
+            if (userInput.ToLower() == "y")
+            {
+                foreach (Ingredient ingredient in ingredients)
+                {
+                    ingredient.Quantity = ingredient.OriginalQuantity;
+                }
+
+                Console.WriteLine("Quantities reset successfully.");
+            }
+            else
+            {
+                Console.WriteLine("Reset quantities canceled.");
+            }
+        }
+     
+        //display recipe
         public void DisplayRecipe()
         {
             Console.WriteLine();
@@ -279,59 +282,60 @@ namespace RecipeApp
             Console.WriteLine();
         }
 
-        public void ClearDataWithConfirmation()
-        {
-            Console.WriteLine("Are you sure you want to clear all data? (yes/no)");
-            string userInput = Console.ReadLine()?.Trim();
+        //clear data with confirmation
+            public void ClearDataWithConfirmation()
+            {
+                Console.WriteLine("Are you sure you want to clear all data? (yes/no)");
+                string userInput = Console.ReadLine()?.Trim();
 
-            if (string.Equals(userInput, "yes", StringComparison.OrdinalIgnoreCase))
-            {
-                ingredients.Clear();
-                steps.Clear();
-                Console.WriteLine("Data cleared.");
-            }
-            else
-            {
-                Console.WriteLine("Operation cancelled.");
+                if (string.Equals(userInput, "yes", StringComparison.OrdinalIgnoreCase))
+                {
+                    ingredients.Clear();
+                    steps.Clear();
+                    Console.WriteLine("Data cleared.");
+                }
+                else
+                {
+                    Console.WriteLine("Operation cancelled.");
+                }
             }
         }
-    }
 
     public class Program
     {
        public static void Main(string[] args)
-{
-    try
-    {
-        List<Recipe> recipes = Recipe.InputRecipes();
-
-        foreach (var recipe in recipes)
         {
-            recipe.CaloriesExceeded += Recipe_CaloriesExceeded;
-            
-            // Scale the recipe if needed
-            recipe.ScaleRecipe();
-            
-            // Reset ingredient quantities if needed
-            recipe.ResetQuantities();
-            
-            // Display the recipe
-            recipe.DisplayRecipe();
-            
-            double totalCalories = recipe.CalculateTotalCalories();
-            Console.WriteLine($"Total Calories: {totalCalories}");
-            
-            // Clear data with confirmation
-            recipe.ClearDataWithConfirmation();
-            
-            recipe.CaloriesExceeded -= Recipe_CaloriesExceeded;
+            try
+            {
+                List<Recipe> recipes = Recipe.InputRecipes();
+
+                foreach (var recipe in recipes)
+                {
+                    recipe.CaloriesExceeded += Recipe_CaloriesExceeded;
+                    
+                    // Scale the recipe if needed
+                    recipe.ScaleRecipe();
+                    
+                    // Reset ingredient quantities if needed
+                    recipe.ResetQuantities();
+                    
+                    // Display the recipe
+                    recipe.DisplayRecipe();
+                    
+                    double totalCalories = recipe.CalculateTotalCalories();
+                    Console.WriteLine($"Total Calories: {totalCalories}");
+                    
+                    // Clear data with confirmation
+                    recipe.ClearDataWithConfirmation();
+                    
+                    recipe.CaloriesExceeded -= Recipe_CaloriesExceeded;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
         }
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"An error occurred: {ex.Message}");
-    }
-}
 
 
         public static void Recipe_CaloriesExceeded(Recipe recipe, double totalCalories)
