@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Numerics;
 
 namespace RecipeApp
 {
@@ -65,16 +67,7 @@ namespace RecipeApp
             Name = name;
             ingredients = new List<Ingredient>();
             steps = new List<RecipeStep>();
-        }
-
-        public void AddIngredient(Ingredient ingredient)
-        {
-            ingredients.Add(ingredient);
-        }
-
-        public void AddStep(RecipeStep step)
-        {
-            steps.Add(step);
+           
         }
 
         public double CalculateTotalCalories()
@@ -109,7 +102,7 @@ namespace RecipeApp
             Console.WriteLine($"Recipe: {Name}");
             Console.ResetColor();
 
-            if (ingredients.Any())
+            if (ingredients.Count != 0)
             {
                 Console.WriteLine("Ingredients:");
                 foreach (var ingredient in ingredients)
@@ -122,7 +115,7 @@ namespace RecipeApp
                 Console.WriteLine("No ingredients added.");
             }
 
-            if (steps.Any())
+            if (steps.Count != 0)
             {
                 Console.WriteLine("Steps:");
                 for (int i = 0; i < steps.Count; i++)
@@ -237,6 +230,7 @@ namespace RecipeApp
                 foreach (var recipe in recipes)
                 {
                     recipe.CaloriesExceeded += Recipe_CaloriesExceeded;
+                    recipe.ResetQuantities();
                     recipe.DisplayRecipe();
                     Console.WriteLine($"Total Calories: {recipe.CalculateTotalCalories()}");
                 }
@@ -264,6 +258,8 @@ namespace RecipeApp
 
                 var recipe = new Recipe(recipeName);
                 recipe.InputRecipeDetails();
+                double factor = 0;
+                recipe.ScaleRecipe(factor);
                 recipes.Add(recipe);
 
                 Console.Write("Do you want to add another recipe? (yes/no): ");
