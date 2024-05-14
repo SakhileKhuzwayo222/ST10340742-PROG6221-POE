@@ -224,10 +224,10 @@ namespace RecipeApp
         // Method to reset ingredient quantities to original values
         public void ResetQuantities()
         {
-            Console.WriteLine("Would you like to reset the quantities? (Y/N)");
+            Console.WriteLine("Would you like to reset the quantities? (Yes/No)");
             string userInput = Console.ReadLine();
 
-            if (userInput.ToLower() == "y")
+            if (userInput.ToLower() == "yes")
             {
                 foreach (Ingredient ingredient in ingredients)
                 {
